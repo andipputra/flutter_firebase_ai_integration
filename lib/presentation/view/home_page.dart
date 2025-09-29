@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ai_integration/presentation/provider/recipe_provider.dart';
+import 'package:flutter_ai_integration/presentation/view/fitness_page.dart';
 import 'package:flutter_ai_integration/presentation/view/ingredients_page.dart';
 import 'package:flutter_ai_integration/presentation/view/recipe_page.dart';
 import 'package:image_picker/image_picker.dart';
@@ -63,6 +64,29 @@ class HomePage extends StatelessWidget {
               ),
               onTap: () {
                 imagePicker(context);
+              },
+            ),
+          ),
+          Card(
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.fitness_center, size: 48),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Cari Program Fitness',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const FitnessPage()),
+                );
               },
             ),
           ),
