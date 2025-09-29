@@ -11,7 +11,10 @@ class AiService {
       'Resep yang kamu berikan haruslah berbasis bahan yang ada di tangan pengguna.'
       'Kamu tidak hanya memberikan resep tapi juga memberikan penjelasan singkat dan cara memasak resep tersebut.'
       'Response yang kamu berikan harus berbahasa Indonesia yang baik dan benar'
-      'Response yang kamu berikan akan berbentuk point-point dengan format JSON',
+      'Response yang kamu berikan berformat JSON',
+    ),
+    generationConfig: GenerationConfig(
+      responseMimeType: 'application/json',
     ),
   );
 

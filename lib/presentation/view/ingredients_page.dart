@@ -95,6 +95,7 @@ class IngredientsForm extends StatelessWidget {
       width: double.infinity,
       child: FilledButton.icon(
         onPressed: () async {
+          FocusScope.of(context).unfocus();
           context.loaderOverlay.show();
           try {
             final listIngredients = context

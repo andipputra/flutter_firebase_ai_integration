@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ai_integration/presentation/provider/recipe_provider.dart';
 import 'package:flutter_ai_integration/presentation/view/ingredients_page.dart';
+import 'package:flutter_ai_integration/presentation/view/recipe_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,12 +62,67 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                // Navigator.pushNamed(context, '/recipe');
+                imagePicker(context);
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  void imagePicker(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(Icons.photo_library),
+            title: Text('Pilih dari galeri'),
+            onTap: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+          ListTile(
+            leading: Icon(Icons.camera),
+            title: Text('Ambil foto'),
+            onTap: () => Navigator.pop(context, ImageSource.camera),
+          ),
+        ],
+      ),
+    );
+
+    if (source == null) return;
+
+    final XFile? image = await picker.pickImage(source: source);
+
+    context.loaderOverlay.show();
+    try {
+      final imageBytes = await image?.readAsBytes();
+
+      if (imageBytes == null) return;
+
+      final response = await context.read<RecipeNotifier>().getRecipeByImage(
+        imageBytes,
+      );
+
+      if (response == null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal mendapatkan resep')));
+        return;
+      }
+
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => RecipePage(response)));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal mendapatkan resep')));
+    } finally {
+      context.loaderOverlay.hide();
+    }
   }
 }
